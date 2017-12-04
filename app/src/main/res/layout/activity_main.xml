@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.usuario.xml.MainActivity">
+
+    <Button
+        android:id="@+id/btnNotas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notas"
+        android:layout_marginTop="74dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btnPartes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnNotas"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="Partes" />
+
+    <Button
+        android:id="@+id/btnNoticias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/btnNotas"
+        android:layout_below="@+id/btnPartes"
+        android:layout_marginTop="25dp"
+        android:text="Noticias" />
+
+    <Button
+        android:id="@+id/btnTitulares"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:text="Titulares"
+        android:layout_below="@+id/btnNoticias"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btnCreacionXML"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnTitulares"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:text="Creación XML" />
+
+</RelativeLayout>
