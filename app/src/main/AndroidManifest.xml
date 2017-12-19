@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Titulares"/>
+        <activity android:name=".Partes"/>
+        <activity android:name=".Noticias"/>
+        <activity android:name=".CreacionXML"/>
+        <activity android:name=".Notas"/>s
     </application>
 
 </manifest>

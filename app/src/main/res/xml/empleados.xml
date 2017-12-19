@@ -1,0 +1,26 @@
+<empresa nombre="mrj">
+    <empleados grupo="Jefes">
+        <empleado nombre="Miguel" edad="21">
+            <puesto>Presidente</puesto>
+            <sueldo>2000</sueldo>
+        </empleado>
+        <empleado nombre="Alberto" edad="19">
+            <puesto>Vice presidente</puesto>
+            <sueldo>1500</sueldo>
+        </empleado>
+    </empleados>
+    <empleados grupo="Ingenieros">
+        <empleado nombre="Javi" edad="23">
+            <puesto>Ingeniero jefe</puesto>
+            <sueldo>1000</sueldo>
+        </empleado>
+        <empleado nombre="Luis" edad="25">
+            <puesto>Ingeniero</puesto>
+            <sueldo>500</sueldo>
+        </empleado>
+        <empleado nombre="Alvaro" edad="18">
+            <puesto>Ventas</puesto>
+            <sueldo>0</sueldo>
+        </empleado>
+    </empleados>
+</empresa>
