@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 
+import com.example.usuario.xml.utils.Analisis;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

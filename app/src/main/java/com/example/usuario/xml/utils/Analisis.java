@@ -1,12 +1,16 @@
-package com.example.usuario.xml;
+package com.example.usuario.xml.utils;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.Xml;
 
+import com.example.usuario.xml.R;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -140,5 +144,41 @@ public class Analisis {
         }
         cadena.append("Media: "+ String.format("%.2f", suma/contador));
         return cadena.toString();
+    }
+
+    public static String analizarRSS(File file) throws NullPointerException, XmlPullParserException, IOException {
+        boolean dentroItem = false;
+        boolean dentroTitle = false;
+        StringBuilder builder = new StringBuilder();
+        XmlPullParser xpp = Xml.newPullParser();
+        xpp.setInput(new FileReader(file));
+        int eventType = xpp.getEventType();
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    if(xpp.getName().equals("item")){
+                        dentroItem = true;
+                    }
+                    if(dentroItem && xpp.getName().equalsIgnoreCase("tittle")){
+                        dentroTitle = true;
+                    }
+                    break;
+                case XmlPullParser.TEXT:
+                    if(dentroTitle){
+                        builder.append(xpp.getText() + "\n");
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    if(xpp.getName().equals("item")){
+                        dentroItem = false;
+                    }
+                    if(dentroItem && xpp.getName().equalsIgnoreCase("tittle")){
+                        dentroTitle = false;
+                    }
+                    break;
+            }
+            eventType = xpp.next();
+        }
+        return builder.toString();
     }
 }

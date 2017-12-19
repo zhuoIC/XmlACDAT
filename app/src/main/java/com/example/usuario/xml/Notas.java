@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import org.xmlpull.v1.XmlPullParser;
+import com.example.usuario.xml.utils.Analisis;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
