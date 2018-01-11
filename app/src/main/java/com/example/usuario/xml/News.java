@@ -12,11 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.usuario.xml.model.FailureEvent;
+import com.example.usuario.xml.model.MessageEvent;
 import com.example.usuario.xml.model.Noticia;
 import com.example.usuario.xml.network.RestClient;
 import com.example.usuario.xml.utils.Analisis;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -29,28 +34,49 @@ import cz.msebera.android.httpclient.Header;
  * Created by usuario on 4/12/17.
  */
 
-public class Noticias extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class News extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     public static final String CANAL = "http://www.europapress.es/rss/rss.aspx?ch=279";
     //public static final String CANAL = "http://192.168.1.200/feed/europapress.xml";
     public static final String TEMPORAL = "europapress.xml";
     ListView lista;
     ArrayList<Noticia> noticias;
     ArrayAdapter<Noticia> adapter;
-    FloatingActionButton fab_updatenews;
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.noticias);
+        setContentView(R.layout.activity_news);
         lista = findViewById(R.id.listView);
         lista.setOnItemClickListener(this);
-        fab_updatenews = findViewById(R.id.floatingActionButton);
-        fab_updatenews.setOnClickListener(this);
+        fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(this);
     }
     @Override
     public void onClick(View v) {
-        if (v == fab_updatenews)
+        if (v == fab)
             descarga(CANAL, TEMPORAL);
     }
+
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        //Toast.makeText(getActivity(), event.message, Toast.LENGTH_SHORT).show();
+        try{
+            progreso.dismiss();
+            lista = CheckXML.analizarNoticias(event.file);
+            mostrar();
+        }
+        catch (Exception e){
+            Toast.makeText(News.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // This method will be called when a SomeOtherEvent is posted
+    @Subscribe
+    public void handleSomethingElse(FailureEvent event) {
+        //doSomethingWith(event);
+    }
+
 
     private void descarga(String canal, String temporal) {
         final ProgressDialog progreso = new ProgressDialog(this);
@@ -64,18 +90,18 @@ public class Noticias extends AppCompatActivity implements View.OnClickListener,
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                 progreso.dismiss();
-                Toast.makeText(Noticias.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(News.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, File file) {
                 progreso.dismiss();
-                Toast.makeText(Noticias.this, "Fichero descargado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(News.this, "Fichero descargado correctamente", Toast.LENGTH_SHORT).show();
                 try {
                     noticias= Analisis.analizarNoticias(file);
                     if(adapter==null)
                     {
-                        adapter= new ArrayAdapter<Noticia>(Noticias.this, R.layout.noticias);
+                        adapter= new ArrayAdapter<Noticia>(News.this, R.layout.noticias);
                         adapter.addAll(noticias);
                     }else {
                         adapter.clear();
@@ -84,10 +110,10 @@ public class Noticias extends AppCompatActivity implements View.OnClickListener,
                     mostrar();
                 } catch (XmlPullParserException e) {
                     e.printStackTrace();
-                    Toast.makeText(Noticias.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(News.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(Noticias.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(News.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -112,5 +138,17 @@ public class Noticias extends AppCompatActivity implements View.OnClickListener,
             startActivity(intent);
         else
             Toast.makeText(getApplicationContext(), "No hay un navegador", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

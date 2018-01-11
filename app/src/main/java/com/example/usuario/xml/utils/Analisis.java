@@ -5,6 +5,7 @@ import android.content.res.XmlResourceParser;
 import android.util.Xml;
 
 import com.example.usuario.xml.R;
+import com.example.usuario.xml.model.Noticia;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 /**
  * Created by usuario on 19/12/17.
@@ -180,5 +182,81 @@ public class Analisis {
             eventType = xpp.next();
         }
         return builder.toString();
+    }
+
+    public static ArrayList<Noticia> analizarNoticias(File file) throws XmlPullParserException, IOException {
+        int eventType;
+        ArrayList<Noticia> noticias = new ArrayList<Noticia>();
+        Noticia actual = null;
+
+        boolean dentroItem = false;
+        boolean dentroTitle = false;
+        boolean dentroLink =false;
+        boolean dentroDescription =false;
+        boolean dentroPubDate = false;
+
+        XmlPullParser xpp = Xml.newPullParser();
+        xpp.setInput(new FileReader(file));
+        eventType=xpp.getEventType();
+        while (eventType!=XmlPullParser.END_DOCUMENT){
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    if(xpp.getName().equals("item"))
+                    {
+                        dentroItem=true;
+                        actual=new Noticia();
+                    }
+                    if(xpp.getName().equals("title"))
+                    {
+                        dentroTitle=true;
+                    }
+                    if(xpp.getName().equals("link"))
+                    {
+                        dentroLink=true;
+
+                    }
+                    if(xpp.getName().equals("description"))
+                    {
+                        dentroDescription=true;
+
+                    }
+                    if(xpp.getName().equals("pubDate"))
+                    {
+                        dentroPubDate=true;
+
+                    }
+                    break;
+
+                case XmlPullParser.TEXT:
+                    if(dentroItem)
+                    {
+                        if(dentroTitle)
+                        {
+                            actual.setTitle(xpp.getText());
+                        }else if(dentroLink)
+                        {
+                            actual.setLink(xpp.getText());
+                        }else if(dentroDescription)
+                        {
+                            actual.setDescription(xpp.getText());
+                        }else if(dentroPubDate)
+                        {
+                            actual.setPubDate(xpp.getText());
+                        }
+                    }
+                    break;
+
+                case XmlPullParser.END_TAG:
+                    if(xpp.getName().equals("item"))
+                    {
+                        dentroItem=false;
+                        noticias.add(actual);
+                    }
+                    break;
+            }
+            eventType = xpp.next();
+        }
+        //devolver el array de noticias
+        return noticias;
     }
 }
